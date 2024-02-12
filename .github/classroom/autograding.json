@@ -1,0 +1,24 @@
+{
+  "tests": [
+    {
+      "name": "Part A test",
+      "setup": "sudo apt install valgrind",
+      "run": "cd \"PartA\" && make clean && make && valgrind --exit-on-first-error=yes --error-exitcode=1 ./firstcomefirstserved",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": null
+    },
+    {
+      "name": "Part B test",
+      "setup": "sudo apt install valgrind",
+      "run": "cd \"PartA\" && make clean && make && valgrind --exit-on-first-error=yes --error-exitcode=1 ./firstcomefirstserved",
+      "input": "",
+      "output": "",
+      "comparison": "exact",
+      "timeout": 10,
+      "points": null
+    }
+  ]
+}
