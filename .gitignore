@@ -1,3 +1,7 @@
 *.o
 PartA/firstcomefirstserved
 PartB/roundrobin
+
+.vscode
+PartA/.vscode
+PartB/.vscode
