@@ -11,9 +11,9 @@
       "points": null
     },
     {
-      "name": "Part B test",
+      "name": "Part B",
       "setup": "sudo apt install valgrind",
-      "run": "cd \"PartA\" && make clean && make && valgrind --exit-on-first-error=yes --error-exitcode=1 ./firstcomefirstserved",
+      "run": "cd \"PartB\" && make clean && make && valgrind --exit-on-first-error=yes --error-exitcode=1 ./roundrobin",
       "input": "",
       "output": "",
       "comparison": "exact",
