@@ -49,6 +49,8 @@ void first_come_first_served(struct task_t* task, int size)
     // Print average times
     printf("Average Wait Time: %f\n", avgWaitTime);
     printf("Average Turnaround Time: %f\n", avgTurnaroundTime);
+
+    free(queue);
 }
 
 
