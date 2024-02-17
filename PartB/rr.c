@@ -1,5 +1,6 @@
 #include "rr.h"
 #include "queue.h"
+#include <limits.h>
 #include <stdio.h>
 
 
@@ -23,7 +24,7 @@ void round_robin(struct task_t *task, int quantum, int size)
 {
     int runTime = 0;
     int taskRuntime = 0;
-    int lastTaskRan;
+    int lastTaskRan = INT_MAX;
 
     // Create queue based on the task array
     struct node_t* queue = create_queue(task, size);
