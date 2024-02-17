@@ -23,17 +23,35 @@ void round_robin(struct task_t *task, int quantum, int size)
 {
     int runTime = 0;
     int taskRuntime = 0;
+    int lastTaskRan;
 
     // Create queue based on the task array
     struct node_t* queue = create_queue(task, size);
 
     // Execute the found robin algorithm
-    for(int i = 0; i < size; i++)
+    while(!is_empty(&queue))
     {
         // "Execute" the first task
         struct task_t* currentTask = peek(&queue);
         taskRuntime = MIN(currentTask->left_to_execute, quantum);
         currentTask->left_to_execute -= taskRuntime;
+
+
+        // Calculate task wait time and turnaround time
+        // NOTE: If the same task runs twice in a row
+        //       don't update the wait-time
+        if(lastTaskRan != currentTask->process_id)
+        {
+            currentTask->waiting_time = runTime;
+        }
+
+        currentTask->turnaround_time = runTime + taskRuntime;
+        
+        // Update runtime
+        runTime += taskRuntime;
+
+        // Keep track of which task just ran
+        lastTaskRan = currentTask->process_id;
 
         // Pop the current task off the queue
         // when it is finished running
@@ -42,16 +60,9 @@ void round_robin(struct task_t *task, int quantum, int size)
             pop(&queue);
         }
 
-        // Calculate task wait time and turnaround time
-        currentTask->waiting_time = runTime;
-        currentTask->turnaround_time = runTime + taskRuntime;
-        
-        // Update runtime
-        runTime += taskRuntime;
-
         // Print times to console
-        printf("\nTask[%d] Wait Time: %d\n", i, currentTask->waiting_time);
-        printf("Task[%d] Turnaround Time: %d\n", i, currentTask->turnaround_time);
+        printf("\nTask[%d] Wait Time: %d\n", currentTask->process_id, currentTask->waiting_time);
+        printf("Task[%d] Turnaround Time: %d\n", currentTask->process_id, currentTask->turnaround_time);
     }
 
     // Calculate average times
