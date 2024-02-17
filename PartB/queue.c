@@ -21,7 +21,7 @@ static int isInvalidNode(struct node_t* node, const char* caller);
 struct node_t* create_queue(struct task_t* task, int size)
 {
     // Validate parameters
-    if((task == NULL) || (size < 1) || ((sizeof(task) / sizeof(struct task_t*)) != size))
+    if((task == NULL) || (size < 1))
     {
         return NULL;
     }
@@ -101,6 +101,11 @@ struct node_t* create_new_node(struct task_t* task)
 ///-------------------------------------------------
 struct task_t* peek(struct node_t** head)
 {
+    if(is_empty(head))
+    {
+        return NULL;
+    }
+
     // NOTE: The base of the queue is a sentinel
     //       therefore the first task node is
     //       linked to it
