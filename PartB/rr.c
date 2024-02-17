@@ -82,7 +82,7 @@ void round_robin(struct task_t *task, int quantum, int size)
 
 float calculate_average_wait_time(struct task_t *task, int size)
 {
-    int totalTime = 0;
+    float totalTime = 0;
 
     for(int i = 0; i < size; i++)
     {
@@ -95,7 +95,7 @@ float calculate_average_wait_time(struct task_t *task, int size)
 
 float calculate_average_turn_around_time(struct task_t *task, int size)
 {
-    int totalTime = 0;
+    float totalTime = 0;
 
     for(int i = 0; i < size; i++)
     {
