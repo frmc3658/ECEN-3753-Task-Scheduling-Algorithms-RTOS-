@@ -38,7 +38,7 @@ void first_come_first_served(struct task_t* task, int size)
         runTime += currentTask->execution_time;
 
         // Print times to console
-        printf("Task[%d] Wait Time: %d\n", i, currentTask->waiting_time);
+        printf("\nTask[%d] Wait Time: %d\n", i, currentTask->waiting_time);
         printf("Task[%d] Turnaround Time: %d\n", i, currentTask->turnaround_time);
     }
 
