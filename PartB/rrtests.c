@@ -2,7 +2,7 @@
 #include "ctest.h"
 #include "rr.h"
 
-#ifdef DEBUG
+
 CTEST_DATA(roundrobin)
 {
     struct task_t task[3];
@@ -94,7 +94,7 @@ CTEST2(roundrobin, leftToExecute_process)
         ASSERT_EQUAL(leftToExecute[i], data->task[i].left_to_execute);
     }
 }
-#endif
+
 
 CTEST_DATA(customRR)
 {
@@ -121,5 +121,40 @@ CTEST2(customRR, differentExeTimes_process)
     for(int i = 0; i < data->size; i++)
     {
         ASSERT_EQUAL(waitTimes[i], data->task[i].waiting_time);
+    }
+}
+
+
+CTEST_DATA(customRR2)
+{
+    struct task_t task[10];
+    int size;
+};
+
+
+CTEST_SETUP(customRR2)
+{
+    int execution[] = {3, 2, 4, 5, 7, 2, 1, 3, 2, 6};
+    data->size = sizeof(execution) / sizeof(execution[0]);
+    int quantum = 3;
+
+    init(data->task, execution, data->size);
+    round_robin(data->task, quantum, data->size);
+}
+
+
+CTEST2(customRR2, differentExeTimes_process)
+{
+    int turnaround[] = {3, 5 ,26, 28, 35, 16, 17, 20, 22, 34};
+    int wait[] = {0, 3, 22, 23, 28, 14, 16, 17, 20, 28};
+
+    for(int i = 0; i < data->size; i++)
+    {
+        ASSERT_EQUAL(wait[i], data->task[i].waiting_time);
+    }
+
+    for(int i = 0; i < data->size; i++)
+    {
+        ASSERT_EQUAL(turnaround[i], data->task[i].turnaround_time);
     }
 }

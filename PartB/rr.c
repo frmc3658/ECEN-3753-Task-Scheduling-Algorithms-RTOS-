@@ -37,7 +37,9 @@ void round_robin(struct task_t *task, int quantum, int size)
 
         taskRuntime = MIN(currentTask->left_to_execute, quantum);
         currentTask->left_to_execute -= taskRuntime;
-
+        
+        // Update runtime
+        runTime += taskRuntime;
 
         // Calculate task wait time and turnaround time
         // NOTE: If the same task runs twice in a row
@@ -47,10 +49,7 @@ void round_robin(struct task_t *task, int quantum, int size)
             currentTask->waiting_time = runTime - (currentTask->execution_time - currentTask->left_to_execute);
         }
 
-        currentTask->turnaround_time = runTime + taskRuntime;
-        
-        // Update runtime
-        runTime += taskRuntime;
+        currentTask->turnaround_time = runTime;
 
         // Keep track of which task just ran
         lastTaskRan = currentTask->process_id;

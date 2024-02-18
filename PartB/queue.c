@@ -133,6 +133,7 @@ void pop(struct node_t** head)
     struct node_t* nodeToPop = sentinel->next;
     struct node_t* newTopNode = nodeToPop->next;
 
+    // Pop the top-most task node from the queue
     sentinel->next = newTopNode;
     free(nodeToPop);
 
@@ -141,7 +142,7 @@ void pop(struct node_t** head)
     //       in the queue when pop() is called
     if(sentinel->next == sentinel)
     {
-        // This signifies an empty queue
+        // Update the sentinel to signify an empty queue
         sentinel->next = NULL;
     }
 }
@@ -156,7 +157,7 @@ void pop(struct node_t** head)
 void push(struct node_t** head, struct task_t* task)
 {
     // Validate parameters
-    if(isInvalidNode(*head, __func__))
+    if(isInvalidNode(*head, __func__) || (task == NULL))
     {
         return;
     }
@@ -185,8 +186,12 @@ void push(struct node_t** head, struct task_t* task)
             nextNode = nextNode->next;
         }
 
+        // Insert new node at the end of the task queue
         struct node_t* newNode = create_new_node(task);
         currentNode->next = newNode;
+
+        // Update the end of the queue to point back to
+        // the sentinel (completing circular linkage)
         newNode->next = sentinel;
     }
 }
