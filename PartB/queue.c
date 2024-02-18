@@ -58,7 +58,7 @@ struct node_t* create_queue(struct task_t* task, int size)
         {
             // Complete circular queue by linking
             // last node to the sentinel
-            currentNode = sentinel;
+            currentNode->next = sentinel;
         }
     }
 
@@ -139,7 +139,7 @@ void pop(struct node_t** head)
     // Check if the sentinel is pointing to itself
     // NOTE: This would occur if only one task node is
     //       in the queue when pop() is called
-    if(&(sentinel->next) == &sentinel)
+    if(sentinel->next == sentinel)
     {
         // This signifies an empty queue
         sentinel->next = NULL;
@@ -156,7 +156,7 @@ void pop(struct node_t** head)
 void push(struct node_t** head, struct task_t* task)
 {
     // Validate parameters
-    if(isInvalidNode(*head, __func__) || (task == NULL))
+    if(isInvalidNode(*head, __func__))
     {
         return;
     }
@@ -185,11 +185,8 @@ void push(struct node_t** head, struct task_t* task)
             nextNode = nextNode->next;
         }
 
-        // Push the node onto the end of the queue
-        struct node_t* newNode = currentNode->next;
-        newNode = create_new_node(task);
-
-        // Complete circular linkage
+        struct node_t* newNode = create_new_node(task);
+        currentNode->next = newNode;
         newNode->next = sentinel;
     }
 }

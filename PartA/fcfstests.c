@@ -60,7 +60,7 @@ CTEST2(firstcomefirstserved, turnaround_time_process)
 
 
 /*
- * @brief   Validate that thePID of each task is unique
+ * @brief   Validate that the PID of each task is unique
  * @retval  None
  */
 CTEST2(firstcomefirstserved, uniquePID_process)
