@@ -31,23 +31,11 @@ struct node_t* create_queue(struct task_t* task, int size)
     {
         return NULL;
     }
-
-    struct node_t* currentNode = sentinel;
-
     // Create and link nodes together to form the queue
     // NOTE: The first "true" node in the queue is linked to the sentinel
     for(int i = 0; i < size; i++)
     {
-        currentNode->next = create_new_node(&(task[i]));
-
-        // Verify that malloc didn't fail
-        if(isInvalidNode(currentNode->next, __func__))
-        {
-            return NULL;
-        }
-
-        // Traverse to the next node
-        currentNode = currentNode->next;
+        push(&sentinel, &(task[i]));
     }
 
     return sentinel;
@@ -146,12 +134,8 @@ void push(struct node_t** head, struct task_t* task)
     // Check if the queue is empty
     if(is_empty(&sentinel))
     {
-        // Push the node onto the end of the queue
-        struct node_t* newNode = sentinel->next;
-        newNode = create_new_node(task);
-
-        // Complete circular linkage
-        newNode->next = sentinel;
+        // Link the new node to the sentinel
+        sentinel->next = create_new_node(task);
     }
     else
     {
@@ -167,36 +151,6 @@ void push(struct node_t** head, struct task_t* task)
 
         // Insert new node at the end of the task queue
         struct node_t* newNode = create_new_node(task);
-        currentNode->next = newNode;
-    }
-    #endif
-
-    #ifdef DEBUG
-    // Traverse to find the end of the queue
-    struct node_t* currentNode = *head;
-    while((currentNode != NULL) && (currentNode->next != NULL))
-    {
-        currentNode = currentNode->next;
-    }
-
-    // Create a new node
-    struct node_t* newNode = create_new_node(task);
-
-    // Verify that the newNode was created properly
-    if(isInvalidNode(newNode, __func__))
-    {
-        return;
-    }
-
-    // Append the node
-    if(currentNode == NULL)
-    {
-        // queue was empty, append to the head
-        *head = newNode;
-    }
-    else
-    {
-        // Append to the end of the queue
         currentNode->next = newNode;
     }
     #endif

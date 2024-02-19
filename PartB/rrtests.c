@@ -3,6 +3,11 @@
 #include "rr.h"
 
 
+///-------------------------------------------------
+/// @brief  Dataset for the roundrobin unit tests
+///
+/// @retval  None
+///-------------------------------------------------
 CTEST_DATA(roundrobin)
 {
     struct task_t task[3];
@@ -10,6 +15,12 @@ CTEST_DATA(roundrobin)
 };
 
 
+///-------------------------------------------------
+/// @brief  Setup the data for the roundrobin unit
+///         tests
+///
+/// @retval  None
+///-------------------------------------------------
 CTEST_SETUP(roundrobin)
 {
     int execution[] = {1, 2, 3};
@@ -21,6 +32,12 @@ CTEST_SETUP(roundrobin)
 }
 
 
+///-------------------------------------------------
+/// @brief  Validate the PID of each task in
+///         the roundrobin data set
+///
+/// @retval  None
+///-------------------------------------------------
 CTEST2(roundrobin, test_process)
 {
     for (int i = 0; i < data->size; i++)
@@ -30,10 +47,17 @@ CTEST2(roundrobin, test_process)
 }
 
 
-/*
- * @brief   Validate the wait times of each task
- * @retval  None
- */
+/********************************
+ *      Custom Unit Tests       *
+ ********************************/
+
+
+///-------------------------------------------------
+/// @brief  Validate the wait time of each task in
+///         the roundrobin data set
+///
+/// @retval  None
+///-------------------------------------------------
 CTEST2(roundrobin, wait_time_process)
 {
     int waitTimes[] = {0, 1, 3};
@@ -45,10 +69,12 @@ CTEST2(roundrobin, wait_time_process)
 }
 
 
-/*
- * @brief   Validate the turnaround times of each task
- * @retval  None
- */
+///-------------------------------------------------
+/// @brief  Validate the turnaround time of each
+///         task in the roundrobin dataset
+///
+/// @retval  None
+///-------------------------------------------------
 CTEST2(roundrobin, turnaround_time_process)
 {
     int turnaroundTimes[] = {1, 3, 6};
@@ -60,10 +86,12 @@ CTEST2(roundrobin, turnaround_time_process)
 }
 
 
-/*
- * @brief   Validate that the PID of each task is unique
- * @retval  None
- */
+///-------------------------------------------------
+/// @brief  Validate that the PID of each task in 
+///         the roundrobin dataset is unique
+///
+/// @retval  None
+///-------------------------------------------------
 CTEST2(roundrobin, uniquePID_process)
 {
     int PIDs[3];
@@ -85,6 +113,13 @@ CTEST2(roundrobin, uniquePID_process)
 }
 
 
+///-------------------------------------------------
+/// @brief  Validate that each task in the 
+///         roundrobin dataset has run until
+///         completion
+///
+/// @retval  None
+///-------------------------------------------------
 CTEST2(roundrobin, leftToExecute_process)
 {
     int leftToExecute[] = {0, 0, 0};
@@ -96,6 +131,11 @@ CTEST2(roundrobin, leftToExecute_process)
 }
 
 
+///-------------------------------------------------
+/// @brief  Dataset of the customRR unit tests
+///
+/// @retval  None
+///-------------------------------------------------
 CTEST_DATA(customRR)
 {
     struct task_t task[3];
@@ -103,6 +143,11 @@ CTEST_DATA(customRR)
 };
 
 
+///-------------------------------------------------
+/// @brief  Setup the customRR unit tests
+///
+/// @retval  None
+///-------------------------------------------------
 CTEST_SETUP(customRR)
 {
     int execution[] = {3, 2, 4};
@@ -114,6 +159,12 @@ CTEST_SETUP(customRR)
 }
 
 
+///-------------------------------------------------
+/// @brief  Validate that the wait times of each 
+///         task in the customRR dataset
+///
+/// @retval  None
+///-------------------------------------------------
 CTEST2(customRR, differentExeTimes_process)
 {
     int waitTimes[] = {4, 2, 5};
@@ -125,6 +176,12 @@ CTEST2(customRR, differentExeTimes_process)
 }
 
 
+///-------------------------------------------------
+/// @brief  Dataset for the customRR2 unit test, which
+///         tests a larger task queue
+///
+/// @retval  None
+///-------------------------------------------------
 CTEST_DATA(customRR2)
 {
     struct task_t task[10];
@@ -132,6 +189,12 @@ CTEST_DATA(customRR2)
 };
 
 
+///-------------------------------------------------
+/// @brief  Setup the customRR2 unit test, which
+///         tests a larger task queue
+///
+/// @retval  None
+///-------------------------------------------------
 CTEST_SETUP(customRR2)
 {
     int execution[] = {3, 2, 4, 5, 7, 2, 1, 3, 2, 6};
@@ -143,6 +206,13 @@ CTEST_SETUP(customRR2)
 }
 
 
+///-------------------------------------------------
+/// @brief  Validate the wait and turnaround times
+///         given the larger task queue of the
+///         customRR dataset
+///
+/// @retval  None
+///-------------------------------------------------
 CTEST2(customRR2, differentExeTimes_process)
 {
     int turnaround[] = {3, 5 ,26, 28, 35, 16, 17, 20, 22, 34};
@@ -151,10 +221,6 @@ CTEST2(customRR2, differentExeTimes_process)
     for(int i = 0; i < data->size; i++)
     {
         ASSERT_EQUAL(wait[i], data->task[i].waiting_time);
-    }
-
-    for(int i = 0; i < data->size; i++)
-    {
         ASSERT_EQUAL(turnaround[i], data->task[i].turnaround_time);
     }
 }
