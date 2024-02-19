@@ -1,47 +1,74 @@
 #include "queue.h"
 
 
+static int isInvalidNode(struct node_t* node, const char* caller);
+
+
+///-------------------------------------------------
+/// @brief  Given an array of tasks, construct a
+///         singly-linked task queue
+///
+/// @param[in] task Array of tasks to create task
+///                 nodes from
+/// @param[in] size The number of tasks nodes to
+///                 create
+///
+/// @return The sentinel node of the queue
+///-------------------------------------------------
 struct node_t* create_queue(struct task_t* task, int size)
 {
-    // Create the sentinel node at the base of the queue
-    struct node_t* queue = create_new_node(NULL);
-
-    // Verify that malloc didn't fail
-    if(queue == NULL)
+    // Validate parameters
+    if((task == NULL) || (size < 1))
     {
-        fprintf(stderr, "create_queue() ERROR: Malloc failed!\n");
         return NULL;
     }
 
-    struct node_t* currentNode = queue;
+    // Create the sentinel node at the base of the queue
+    struct node_t* sentinel = create_new_node(NULL);
+
+    // Verify that malloc didn't fail
+    if(isInvalidNode(sentinel, __func__))
+    {
+        return NULL;
+    }
+
+    struct node_t* currentNode = sentinel;
 
     // Create and link nodes together to form the queue
     // NOTE: The first "true" node in the queue is linked to the sentinel
     for(int i = 0; i < size; i++)
     {
         currentNode->next = create_new_node(&(task[i]));
-        currentNode = currentNode->next;
 
-        if(currentNode == NULL)
+        // Verify that malloc didn't fail
+        if(isInvalidNode(currentNode->next, __func__))
         {
-            fprintf(stderr, "create_queue() ERROR: Couldn't create a new node!\n");
             return NULL;
         }
+
+        // Traverse to the next node
+        currentNode = currentNode->next;
     }
 
-    return queue;
+    return sentinel;
 }
 
 
+///-------------------------------------------------
+/// @brief  Construct a new task node
+///
+/// @param[in] task Task to attach to a node
+///
+/// @return The newly created task node
+///-------------------------------------------------
 struct node_t* create_new_node(struct task_t* task)
 {
     // Dynamically allocate memory for the new node
     struct node_t* newNode = (struct node_t*)malloc(sizeof(struct node_t));
     
     // Verify that malloc didn't fail
-    if(newNode == NULL)
+    if(isInvalidNode(newNode, __func__))
     {
-        fprintf(stderr, "create_queue() ERROR: Malloc failed\n");
         return NULL;
     }
 
@@ -53,13 +80,35 @@ struct node_t* create_new_node(struct task_t* task)
 }
 
 
+///-------------------------------------------------
+/// @brief Returns the top-most task for the queue
+///
+/// @param[in] head The head of the task queue
+/// 
+/// @return The top-most task
+///-------------------------------------------------
 struct task_t* peek(struct node_t** head)
 {
-    // Return the top-most task of the queue
-    return (*head)->task;
+    if(is_empty(head))
+    {
+        return NULL;
+    }
+
+    // NOTE: The base of the queue is a sentinel
+    //       therefore the first task node is
+    //       linked to it
+    struct node_t* topNode = (*head)->next;
+
+    // Return the top-most task
+    return topNode->task;
 }
 
 
+///-------------------------------------------------
+/// @brief  Pop the top-most task off the queue
+///
+/// @param[in] head The head of the queue
+///-------------------------------------------------
 void pop(struct node_t** head)
 {
     // Check if the queue is empty
@@ -77,15 +126,52 @@ void pop(struct node_t** head)
 }
 
 
+///-------------------------------------------------
+/// @brief  Push a new task onto the queue
+///
+/// @param[in] head The head of the task queue
+/// @param[in] task The task to push onto the queue
+///-------------------------------------------------
 void push(struct node_t** head, struct task_t* task)
 {
+    #ifndef DEBUG
     // Verify that the queue is initialized properly
-    if(head == NULL)
+    if(isInvalidNode(*head, __func__) || (task == NULL))
     {
-        fprintf(stderr, "push() ERROR: Queue is uninitialized!\n");
         return;
     }
 
+    struct node_t* sentinel = *head;
+
+    // Check if the queue is empty
+    if(is_empty(&sentinel))
+    {
+        // Push the node onto the end of the queue
+        struct node_t* newNode = sentinel->next;
+        newNode = create_new_node(task);
+
+        // Complete circular linkage
+        newNode->next = sentinel;
+    }
+    else
+    {
+        struct node_t* nextNode = sentinel->next;
+        struct node_t* currentNode;
+
+        // Traverse queue until you find the sentinel
+        while(nextNode != NULL)
+        {
+            currentNode = nextNode;
+            nextNode = nextNode->next;
+        }
+
+        // Insert new node at the end of the task queue
+        struct node_t* newNode = create_new_node(task);
+        currentNode->next = newNode;
+    }
+    #endif
+
+    #ifdef DEBUG
     // Traverse to find the end of the queue
     struct node_t* currentNode = *head;
     while((currentNode != NULL) && (currentNode->next != NULL))
@@ -97,9 +183,8 @@ void push(struct node_t** head, struct task_t* task)
     struct node_t* newNode = create_new_node(task);
 
     // Verify that the newNode was created properly
-    if(newNode == NULL)
+    if(isInvalidNode(newNode, __func__))
     {
-        fprintf(stderr, "push() ERROR: Couldn't create a new node!\n");
         return;
     }
 
@@ -114,17 +199,29 @@ void push(struct node_t** head, struct task_t* task)
         // Append to the end of the queue
         currentNode->next = newNode;
     }
+    #endif
 }
 
 
+///-------------------------------------------------
+/// @brief  Check if the queue is empty
+///
+/// @param[in] head The head of the task queue
+///
+/// @return True/False
+///-------------------------------------------------
 int is_empty(struct node_t** head)
 {
-    // Verify the first pointer is valid before trying to
-    // dereference the second pointer (which would be UB)
-    return ((head == NULL) || (*head == NULL));
+    return ((*head)->next == NULL);
 }
 
 
+///-------------------------------------------------
+/// @brief  Traverse the queue and free all memory
+///         aside from the the sentinel
+///
+/// @param[in] head The head of the queue to empty
+///-------------------------------------------------
 void empty_queue(struct node_t** head)
 {
     // Check if queue is empty or uninitialized
@@ -145,4 +242,24 @@ void empty_queue(struct node_t** head)
     }
 
     *head = NULL;
+}
+
+
+///-------------------------------------------------
+/// @brief  Validates that a node was constructed
+///
+/// @param[in] node The node to validate
+/// @param[in] caller Should always pass in __func__
+///
+/// @return 1: Invalid node; 0: Valid node
+///-------------------------------------------------
+static int isInvalidNode(struct node_t* node, const char* caller)
+{
+    if(node == NULL)
+    {
+        fprintf(stderr, "%s() ERROR: Couldn't create node!\n", caller);
+        return 1;
+    }
+
+    return 0;
 }
